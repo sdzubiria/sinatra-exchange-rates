@@ -1,0 +1,15 @@
+<h1>Convert <%= @original_currency %></h1>
+
+<ul>
+  <% @currencies.each do |code, name| %>
+    <% unless code == @original_currency %>
+      <li>
+        <a href="/<%= @original_currency %>/<%= code %>">
+          Convert 1 <%= @original_currency %> to <%= code %>...
+        </a>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+<a href="/">Back to all currencies</a>
