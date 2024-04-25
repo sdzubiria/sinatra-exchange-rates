@@ -3,26 +3,48 @@ require "sinatra/reloader"
 require "http"
 require "json"
 
-# Assuming your API key is set in the environment variable as EXCHANGE_RATE_KEY
-api_key = ENV.fetch("EXCHANGERATE_API")
+get("/") do
+  @raw_response = HTTP.get("https://api.exchangerate.host/list?access_key=#{ENV.fetch("EXCHANGERATE_API")}")
+  
+  @string_response = @raw_response.to_s
 
-get "/" do
-  api_url = "https://api.exchangerate.host/list?access_key=#{api_key}"
-  response = HTTP.get(api_url)
-  @currencies = JSON.parse(response.to_s)["symbols"]
-  erb :homepage
+  @parsed_response = JSON.parse(@string_response)
+
+  @currencies = @parsed_response.fetch("currencies")
+
+  erb(:homepage)
+  
 end
 
 get "/:from_currency" do
-  @original_currency = params[:from_currency]
-  erb :currency_page
+  @the_symbol = params.fetch("from_currency")
+
+  @url = "https://api.exchangerate.host/list?access_key=#{ENV.fetch("EXCHANGERATE_API")}"
+
+  @raw_response = HTTP.get(@url)
+  
+  @string_response = @raw_response.to_s
+
+  @parsed_response = JSON.parse(@string_response)
+
+  @currencies = @parsed_response.fetch("currencies")
+
+  erb(:currency_page)
 end
 
 get "/:from_currency/:to_currency" do
-  @original_currency = params[:from_currency]
-  @destination_currency = params[:to_currency]
-  api_url = "https://api.exchangerate.host/convert?access_key=#{api_key}&from=#{@original_currency}&to=#{@destination_currency}&amount=1"
-  response = HTTP.get(api_url)
-  @conversion_result = JSON.parse(response.to_s)["result"]
-  erb :conversion_page
+  @from = params.fetch("from_currency")
+  @to = params.fetch("to_currency")
+
+  @url = "https://api.exchangerate.host/convert?access_key=#{ENV.fetch("EXCHANGERATE_API")}&from=#{@from}&to=#{@to}&amount=1"
+
+  @raw_response = HTTP.get(@url)
+
+  @string_response = @raw_response.to_s
+
+  @parsed_response = JSON.parse(@string_response)
+
+  @amount = @parsed_response.fetch("result")
+  
+  erb(:conversion_page)
 end

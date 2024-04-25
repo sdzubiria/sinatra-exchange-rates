@@ -1,15 +1,13 @@
-<h1>Convert <%= @original_currency %></h1>
+<h1>Convert <%= @the_symbol %></h1>
+
+<p>Go <a href="/">back</a>.</p>
 
 <ul>
-  <% @currencies.each do |code, name| %>
-    <% unless code == @original_currency %>
-      <li>
-        <a href="/<%= @original_currency %>/<%= code %>">
-          Convert 1 <%= @original_currency %> to <%= code %>...
-        </a>
-      </li>
-    <% end %>
+  <% @currencies.keys.each do |symbol| %>
+    <li>
+      <a href="/<%= @the_symbol %>/<%= symbol %>">
+        Convert 1 <%= @the_symbol %> to <%= symbol %>...
+      </a>
+    </li>
   <% end %>
 </ul>
-
-<a href="/">Back to all currencies</a>
